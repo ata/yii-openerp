@@ -7,8 +7,6 @@ require_once 'Zend/XmlRpc/Client.php';
 class OpenERP extends CApplicationComponent
 {
 	public $server;
-	public $user;
-	public $password;
 	public $database;
 	public $modelsPath;
 
@@ -22,14 +20,19 @@ class OpenERP extends CApplicationComponent
 		return Yii::getPathOfAlias($this->modelsPath);
 	}
 
-	private $_userId;
 	public function getUserId()
 	{
-		if ($this->_userId == null ){
-			$this->_userId = $this->getClientCommon()->login($this->database,
-					$this->user, $this->password);
-		}
-		return $this->_userId;
+		return Yii::app()->session['openerp_user_id'];
+	}
+
+	public function getUser()
+	{
+		return Yii::app()->session['openerp_user'];
+	}
+
+	public function getPassword()
+	{
+		return Yii::app()->session['openerp_password'];
 	}
 
 	private $_clientCommon;
