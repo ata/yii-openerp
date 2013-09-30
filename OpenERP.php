@@ -9,10 +9,28 @@ class OpenERP extends CApplicationComponent
 	public $server;
 	public $database;
 	public $modelsPath;
+	public $publicUser;
+	public $publicPassword;
+	public $publicUserId;
 
 	public function init()
 	{
 		parent::init();
+		if (Yii::app()->session['openerp_user_id'] === null) {
+			if ($this->publicUser == null || $this->publicPassword == null) {
+				throw new CException('Non Login openerp api request, '
+									.'please set $publicUser and '
+									.'$publicPassword in WebApplication');
+			}
+
+			$this->publicUserId = $this->getClientCommon()
+										->login($this->database,
+												$this->publicUser,
+												$this->publicPassword);
+
+			//var_dump($this);
+			//die();
+		}
 	}
 
 	public function getModelsFullPath()
@@ -22,16 +40,27 @@ class OpenERP extends CApplicationComponent
 
 	public function getUserId()
 	{
+		if (Yii::app()->session['openerp_user_id'] === null) {
+			return $this->publicUserId;
+		}
+
 		return Yii::app()->session['openerp_user_id'];
 	}
 
 	public function getUser()
 	{
+		if (Yii::app()->session['openerp_user'] === null) {
+			return $this->publicUser;
+		}
+
 		return Yii::app()->session['openerp_user'];
 	}
 
 	public function getPassword()
 	{
+		if (Yii::app()->session['openerp_password'] === null) {
+			return $this->publicPassword;
+		}
 		return Yii::app()->session['openerp_password'];
 	}
 

@@ -18,6 +18,7 @@ abstract class OOActiveRecord extends CModel
 	public $relations;
 	public $objectToStringField = 'name';
 
+
 	public function __construct($scenario='insert')
 	{
 		if ($scenario == null) {// internally used by populateRecord() and model()
@@ -58,6 +59,20 @@ abstract class OOActiveRecord extends CModel
 				parent::__set($name,$value);
 			}
 		}
+	}
+
+	public function __isset($name)
+	{
+		if(isset($this->_attributes[$name]))
+			return true;
+		elseif(isset($this->getMetaData()->columns[$name]))
+			return false;
+		elseif(isset($this->_related[$name]))
+			return true;
+		elseif(isset($this->getMetaData()->relations[$name]))
+			return $this->getRelated($name)!==null;
+		else
+			return parent::__isset($name);
 	}
 
 	public function makeComplete()
@@ -282,10 +297,11 @@ abstract class OOActiveRecord extends CModel
 		return $all ? $this->populateRecords($listData, true, $criteria->index) : $this->populateRecord($listData[0]);
 	}
 
-	public function findAll($value)
+	public function findAll($value=array())
 	{
-		$criteria = is_array($value) ? OOCriteria($value): $value;
+		$criteria = is_array($value) ? new OOCriteria($value): $value;
 		return $this->query($criteria, true);
+
 	}
 
 	public function find($criteria)
