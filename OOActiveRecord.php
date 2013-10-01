@@ -304,9 +304,9 @@ abstract class OOActiveRecord extends CModel
 
 	}
 
-	public function find($criteria)
+	public function find($value=array())
 	{
-		$criteria = is_array($value) ? OOCriteria($value): $value;
+		$criteria = is_array($value) ? new OOCriteria($value): $value;
 		return $this->query($criteria);
 	}
 
