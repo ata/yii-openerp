@@ -84,6 +84,14 @@ class OpenERP extends CApplicationComponent
 		return $this->_client;
 	}
 
+	public function execute()
+	{
+		$std = array($this->database, $this->userId, $this->password);
+		$args = func_get_args();
+		$args = array_merge($std, $args);
+		return call_user_func_array(array($this->getClient(), 'execute'), $args);
+	}
+
 	/**
 	 * @return new id data
 	 */
@@ -91,7 +99,7 @@ class OpenERP extends CApplicationComponent
 	{
 		return $this->getClient()->execute($this->database,
 				$this->getUserId(), $this->password, $model,
-				'create', $ids, $values, $context);
+				'create', $values, $context);
 	}
 
 	/**
