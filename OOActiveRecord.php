@@ -279,7 +279,7 @@ abstract class OOActiveRecord extends CModel
 			if(($record=$this->populateRecord($attributes,$callAfterFind))!==null)
 			{
 				if($index === null) {
-					$records[] = $record;
+					$records[$record->id] = $record;
 				} else {
 					$records[$record->$index]=$record;
 				}
